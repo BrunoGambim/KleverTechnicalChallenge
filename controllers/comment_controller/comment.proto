@@ -5,9 +5,9 @@ import "google/protobuf/empty.proto";
 
 option go_package = "./controllers/comment_controller";
 
-service AlbumController {
-  rpc findAllAlbums(google.protobuf.Empty) returns (GetAllCommentDTO) {}
-  rpc createAlbum(CreateCommentDTO) returns (google.protobuf.Empty) {}
+service CommentController {
+  rpc FindAllComments(google.protobuf.Empty) returns (GetAllCommentDTO) {}
+  rpc CreateComment(CreateCommentDTO) returns (google.protobuf.Empty) {}
 }
 
 message GetCommentDTO {

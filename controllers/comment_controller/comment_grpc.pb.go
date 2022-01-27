@@ -15,122 +15,122 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// AlbumControllerClient is the client API for AlbumController service.
+// CommentControllerClient is the client API for CommentController service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AlbumControllerClient interface {
-	FindAllAlbums(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error)
-	CreateAlbum(ctx context.Context, in *CreateCommentDTO, opts ...grpc.CallOption) (*empty.Empty, error)
+type CommentControllerClient interface {
+	FindAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error)
+	CreateComment(ctx context.Context, in *CreateCommentDTO, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
-type albumControllerClient struct {
+type commentControllerClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewAlbumControllerClient(cc grpc.ClientConnInterface) AlbumControllerClient {
-	return &albumControllerClient{cc}
+func NewCommentControllerClient(cc grpc.ClientConnInterface) CommentControllerClient {
+	return &commentControllerClient{cc}
 }
 
-func (c *albumControllerClient) FindAllAlbums(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error) {
+func (c *commentControllerClient) FindAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error) {
 	out := new(GetAllCommentDTO)
-	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.AlbumController/findAllAlbums", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.CommentController/FindAllComments", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *albumControllerClient) CreateAlbum(ctx context.Context, in *CreateCommentDTO, opts ...grpc.CallOption) (*empty.Empty, error) {
+func (c *commentControllerClient) CreateComment(ctx context.Context, in *CreateCommentDTO, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.AlbumController/createAlbum", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.CommentController/CreateComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// AlbumControllerServer is the server API for AlbumController service.
-// All implementations must embed UnimplementedAlbumControllerServer
+// CommentControllerServer is the server API for CommentController service.
+// All implementations must embed UnimplementedCommentControllerServer
 // for forward compatibility
-type AlbumControllerServer interface {
-	FindAllAlbums(context.Context, *empty.Empty) (*GetAllCommentDTO, error)
-	CreateAlbum(context.Context, *CreateCommentDTO) (*empty.Empty, error)
-	mustEmbedUnimplementedAlbumControllerServer()
+type CommentControllerServer interface {
+	FindAllComments(context.Context, *empty.Empty) (*GetAllCommentDTO, error)
+	CreateComment(context.Context, *CreateCommentDTO) (*empty.Empty, error)
+	mustEmbedUnimplementedCommentControllerServer()
 }
 
-// UnimplementedAlbumControllerServer must be embedded to have forward compatible implementations.
-type UnimplementedAlbumControllerServer struct {
+// UnimplementedCommentControllerServer must be embedded to have forward compatible implementations.
+type UnimplementedCommentControllerServer struct {
 }
 
-func (UnimplementedAlbumControllerServer) FindAllAlbums(context.Context, *empty.Empty) (*GetAllCommentDTO, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindAllAlbums not implemented")
+func (UnimplementedCommentControllerServer) FindAllComments(context.Context, *empty.Empty) (*GetAllCommentDTO, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindAllComments not implemented")
 }
-func (UnimplementedAlbumControllerServer) CreateAlbum(context.Context, *CreateCommentDTO) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateAlbum not implemented")
+func (UnimplementedCommentControllerServer) CreateComment(context.Context, *CreateCommentDTO) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
 }
-func (UnimplementedAlbumControllerServer) mustEmbedUnimplementedAlbumControllerServer() {}
+func (UnimplementedCommentControllerServer) mustEmbedUnimplementedCommentControllerServer() {}
 
-// UnsafeAlbumControllerServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AlbumControllerServer will
+// UnsafeCommentControllerServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CommentControllerServer will
 // result in compilation errors.
-type UnsafeAlbumControllerServer interface {
-	mustEmbedUnimplementedAlbumControllerServer()
+type UnsafeCommentControllerServer interface {
+	mustEmbedUnimplementedCommentControllerServer()
 }
 
-func RegisterAlbumControllerServer(s grpc.ServiceRegistrar, srv AlbumControllerServer) {
-	s.RegisterService(&AlbumController_ServiceDesc, srv)
+func RegisterCommentControllerServer(s grpc.ServiceRegistrar, srv CommentControllerServer) {
+	s.RegisterService(&CommentController_ServiceDesc, srv)
 }
 
-func _AlbumController_FindAllAlbums_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CommentController_FindAllComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(empty.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AlbumControllerServer).FindAllAlbums(ctx, in)
+		return srv.(CommentControllerServer).FindAllComments(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/KleverTechnicalChallenge.AlbumController/findAllAlbums",
+		FullMethod: "/KleverTechnicalChallenge.CommentController/FindAllComments",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AlbumControllerServer).FindAllAlbums(ctx, req.(*empty.Empty))
+		return srv.(CommentControllerServer).FindAllComments(ctx, req.(*empty.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AlbumController_CreateAlbum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CommentController_CreateComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateCommentDTO)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AlbumControllerServer).CreateAlbum(ctx, in)
+		return srv.(CommentControllerServer).CreateComment(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/KleverTechnicalChallenge.AlbumController/createAlbum",
+		FullMethod: "/KleverTechnicalChallenge.CommentController/CreateComment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AlbumControllerServer).CreateAlbum(ctx, req.(*CreateCommentDTO))
+		return srv.(CommentControllerServer).CreateComment(ctx, req.(*CreateCommentDTO))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// AlbumController_ServiceDesc is the grpc.ServiceDesc for AlbumController service.
+// CommentController_ServiceDesc is the grpc.ServiceDesc for CommentController service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var AlbumController_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "KleverTechnicalChallenge.AlbumController",
-	HandlerType: (*AlbumControllerServer)(nil),
+var CommentController_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "KleverTechnicalChallenge.CommentController",
+	HandlerType: (*CommentControllerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "findAllAlbums",
-			Handler:    _AlbumController_FindAllAlbums_Handler,
+			MethodName: "FindAllComments",
+			Handler:    _CommentController_FindAllComments_Handler,
 		},
 		{
-			MethodName: "createAlbum",
-			Handler:    _AlbumController_CreateAlbum_Handler,
+			MethodName: "CreateComment",
+			Handler:    _CommentController_CreateComment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
