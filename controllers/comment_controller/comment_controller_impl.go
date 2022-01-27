@@ -43,6 +43,7 @@ func (controller *CommentController) CreateComment(ctx context.Context, commentD
 	_, err := controller.commentService.Insert(comment)
 	if err != nil {
 		log.Printf(err.Error())
+		return &empty.Empty{}, nil
 	}
 	return &empty.Empty{}, nil
 }
