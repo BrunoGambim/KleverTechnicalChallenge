@@ -3,9 +3,9 @@ package repositories
 import (
 	connectionFactory "KleverTechnicalChallenge/database/connection"
 	models "KleverTechnicalChallenge/domain/models"
-	"sync"
 
 	"context"
+	"sync"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -27,7 +27,7 @@ type CommentRepository struct {
 	context    context.Context
 }
 
-func NewRepository() (*CommentRepository, error) {
+func NewCommentRepository() (*CommentRepository, error) {
 	repositoryOnce.Do(func() {
 		context := context.Background()
 		client, err := connectionFactory.GetMongoClient(context)
