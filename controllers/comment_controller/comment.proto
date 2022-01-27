@@ -1,0 +1,24 @@
+syntax = "proto3";
+package KleverTechnicalChallenge;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "./controllers/comment_controller";
+
+service AlbumController {
+  rpc findAllAlbums(google.protobuf.Empty) returns (GetAllCommentDTO) {}
+  rpc createAlbum(CreateCommentDTO) returns (google.protobuf.Empty) {}
+}
+
+message GetCommentDTO {
+  string id = 1;
+  string message = 2;
+}
+
+message CreateCommentDTO {
+  string message = 1;
+}
+
+message GetAllCommentDTO {
+  repeated GetCommentDTO comments = 1;
+}
