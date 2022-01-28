@@ -1,20 +1,20 @@
-package services_integration_test
+package services_unit_test
 
 import (
-	comment_repository "KleverTechnicalChallenge/database/repositories/comment_repository"
 	"KleverTechnicalChallenge/domain/models"
 	"KleverTechnicalChallenge/domain/services"
+
 	"testing"
 
-	"github.com/joho/godotenv"
+	mocked_repositories "KleverTechnicalChallenge/tests/mocked_repositories"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var commentService *services.CommentService
 
 func init() {
-	godotenv.Overload(".env")
-	repository, _ := comment_repository.NewCommentRepository()
+	repository := mocked_repositories.NewCommentRepository()
 	commentService, _ = services.NewCommentService(repository)
 }
 

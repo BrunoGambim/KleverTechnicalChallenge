@@ -1,10 +1,12 @@
-package services_integration_test
+package services_unit_test
 
 import (
-	upvote_repository "KleverTechnicalChallenge/database/repositories/upvote_repository"
 	"KleverTechnicalChallenge/domain/models"
 	"KleverTechnicalChallenge/domain/services"
+
 	"testing"
+
+	mocked_repositories "KleverTechnicalChallenge/tests/mocked_repositories"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,7 +16,7 @@ var upvoteService *services.UpvoteService
 
 func init() {
 	godotenv.Overload(".env")
-	repository, _ := upvote_repository.NewUpvoteRepository()
+	repository := mocked_repositories.NewUpvoteRepository()
 	upvoteService, _ = services.NewUpvoteService(repository)
 }
 
