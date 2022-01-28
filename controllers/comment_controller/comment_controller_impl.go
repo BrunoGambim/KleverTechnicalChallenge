@@ -25,17 +25,16 @@ func NewCommentController() *CommentController {
 	}
 }
 
-func (controller *CommentController) GetAllComments(ctx context.Context, e *empty.Empty) (*GetAllCommentDTO, error) {
+func (controller *CommentController) GetAllComments(e *empty.Empty, stream CommentController_GetAllCommentsServer) error {
 	commentList, err := controller.commentService.FindAll()
 	if err != nil {
 		log.Printf(err.Error())
-		return &GetAllCommentDTO{}, nil
+		return nil
 	}
-	response := GetAllCommentDTO{}
 	for _, comment := range commentList {
-		response.Comments = append(response.Comments, getCommentDtoFromModel(comment))
+		stream.Send(getCommentDtoFromModel(comment))
 	}
-	return &response, nil
+	return nil
 }
 
 func (controller *CommentController) CreateComment(ctx context.Context, commentDto *CreateCommentDTO) (*empty.Empty, error) {

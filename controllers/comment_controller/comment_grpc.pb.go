@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CommentControllerClient interface {
-	GetAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error)
+	GetAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (CommentController_GetAllCommentsClient, error)
 	CreateComment(ctx context.Context, in *CreateCommentDTO, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
@@ -31,13 +31,36 @@ func NewCommentControllerClient(cc grpc.ClientConnInterface) CommentControllerCl
 	return &commentControllerClient{cc}
 }
 
-func (c *commentControllerClient) GetAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error) {
-	out := new(GetAllCommentDTO)
-	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.CommentController/GetAllComments", in, out, opts...)
+func (c *commentControllerClient) GetAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (CommentController_GetAllCommentsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &CommentController_ServiceDesc.Streams[0], "/KleverTechnicalChallenge.CommentController/GetAllComments", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &commentControllerGetAllCommentsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type CommentController_GetAllCommentsClient interface {
+	Recv() (*GetCommentDTO, error)
+	grpc.ClientStream
+}
+
+type commentControllerGetAllCommentsClient struct {
+	grpc.ClientStream
+}
+
+func (x *commentControllerGetAllCommentsClient) Recv() (*GetCommentDTO, error) {
+	m := new(GetCommentDTO)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func (c *commentControllerClient) CreateComment(ctx context.Context, in *CreateCommentDTO, opts ...grpc.CallOption) (*empty.Empty, error) {
@@ -53,7 +76,7 @@ func (c *commentControllerClient) CreateComment(ctx context.Context, in *CreateC
 // All implementations must embed UnimplementedCommentControllerServer
 // for forward compatibility
 type CommentControllerServer interface {
-	GetAllComments(context.Context, *empty.Empty) (*GetAllCommentDTO, error)
+	GetAllComments(*empty.Empty, CommentController_GetAllCommentsServer) error
 	CreateComment(context.Context, *CreateCommentDTO) (*empty.Empty, error)
 	mustEmbedUnimplementedCommentControllerServer()
 }
@@ -62,8 +85,8 @@ type CommentControllerServer interface {
 type UnimplementedCommentControllerServer struct {
 }
 
-func (UnimplementedCommentControllerServer) GetAllComments(context.Context, *empty.Empty) (*GetAllCommentDTO, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllComments not implemented")
+func (UnimplementedCommentControllerServer) GetAllComments(*empty.Empty, CommentController_GetAllCommentsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetAllComments not implemented")
 }
 func (UnimplementedCommentControllerServer) CreateComment(context.Context, *CreateCommentDTO) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
@@ -81,22 +104,25 @@ func RegisterCommentControllerServer(s grpc.ServiceRegistrar, srv CommentControl
 	s.RegisterService(&CommentController_ServiceDesc, srv)
 }
 
-func _CommentController_GetAllComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
+func _CommentController_GetAllComments_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(empty.Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(CommentControllerServer).GetAllComments(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/KleverTechnicalChallenge.CommentController/GetAllComments",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommentControllerServer).GetAllComments(ctx, req.(*empty.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(CommentControllerServer).GetAllComments(m, &commentControllerGetAllCommentsServer{stream})
+}
+
+type CommentController_GetAllCommentsServer interface {
+	Send(*GetCommentDTO) error
+	grpc.ServerStream
+}
+
+type commentControllerGetAllCommentsServer struct {
+	grpc.ServerStream
+}
+
+func (x *commentControllerGetAllCommentsServer) Send(m *GetCommentDTO) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _CommentController_CreateComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -125,14 +151,16 @@ var CommentController_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CommentControllerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetAllComments",
-			Handler:    _CommentController_GetAllComments_Handler,
-		},
-		{
 			MethodName: "CreateComment",
 			Handler:    _CommentController_CreateComment_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetAllComments",
+			Handler:       _CommentController_GetAllComments_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "controllers/comment_controller/comment.proto",
 }

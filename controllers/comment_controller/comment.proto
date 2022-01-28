@@ -6,7 +6,7 @@ import "google/protobuf/empty.proto";
 option go_package = "./controllers/comment_controller";
 
 service CommentController {
-  rpc GetAllComments(google.protobuf.Empty) returns (GetAllCommentDTO) {}
+  rpc GetAllComments(google.protobuf.Empty) returns (stream GetCommentDTO) {}
   rpc CreateComment(CreateCommentDTO) returns (google.protobuf.Empty) {}
 }
 
@@ -17,8 +17,4 @@ message GetCommentDTO {
 
 message CreateCommentDTO {
   string message = 1;
-}
-
-message GetAllCommentDTO {
-  repeated GetCommentDTO comments = 1;
 }
