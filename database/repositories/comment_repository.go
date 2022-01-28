@@ -56,22 +56,27 @@ func (repository *CommentRepository) Insert(comment models.Comment) (string, err
 }
 
 func (repository *CommentRepository) FindAll() ([]models.Comment, error) {
-	comments := []models.Comment{}
 	filter := bson.M{}
 
 	cur, err := repository.collection.Find(repository.ctx, filter)
 	if err != nil {
-		return comments, err
+		return []models.Comment{}, err
 	}
 
+	result, err := repository.commentListFromCur(cur)
+
+	return result, err
+}
+
+func (repository *CommentRepository) commentListFromCur(cur *mongo.Cursor) ([]models.Comment, error) {
+	result := []models.Comment{}
 	for cur.Next(repository.ctx) {
 		comment := models.Comment{}
 		err := cur.Decode(&comment)
 		if err != nil {
-			return comments, err
+			return result, err
 		}
-		comments = append(comments, comment)
+		result = append(result, comment)
 	}
-
-	return comments, err
+	return result, nil
 }
