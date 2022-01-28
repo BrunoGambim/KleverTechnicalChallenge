@@ -20,7 +20,7 @@ func NewUpvoteService() (*UpvoteService, error) {
 	}, nil
 }
 
-func (service *UpvoteService) FindById(id string) (models.Upvote, error) {
+func (service *UpvoteService) FindById(id string) ([]models.Upvote, error) {
 	service.upvoteRepository.Lock()
 	defer service.upvoteRepository.Unlock()
 	upvote, err := service.upvoteRepository.FindById(id)

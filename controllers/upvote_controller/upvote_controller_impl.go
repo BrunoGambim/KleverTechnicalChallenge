@@ -32,7 +32,11 @@ func (controller *UpvoteController) GetUpvote(ctx context.Context, idDTO *IdDTO)
 		log.Printf(err.Error())
 		return &GetUpvoteDTO{}, nil
 	}
-	response := getAlbumDtoFromModel(upvote)
+	if len(upvote) == 0 {
+		log.Printf("Not found")
+		return &GetUpvoteDTO{}, nil
+	}
+	response := getAlbumDtoFromModel(upvote[0])
 	return response, nil
 }
 

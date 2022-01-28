@@ -44,17 +44,34 @@ func NewUpvoteRepository() (*UpvoteRepository, error) {
 	return upvoteRepositoryInstance, upvoteRepositoryInstanceError
 }
 
-func (repository *UpvoteRepository) FindById(id string) (models.Upvote, error) {
-	result := models.Upvote{}
-
+func (repository *UpvoteRepository) FindById(id string) ([]models.Upvote, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return result, err
+		return []models.Upvote{}, err
 	}
 
 	filter := bson.M{"_id": objectId}
-	err = repository.collection.FindOne(repository.ctx, filter).Decode(&result)
+	cur, err := repository.collection.Find(repository.ctx, filter)
+
+	if err != nil {
+		return []models.Upvote{}, err
+	}
+
+	result, err := repository.upvoteListFromCur(cur)
 	return result, err
+}
+
+func (repository *UpvoteRepository) upvoteListFromCur(cur *mongo.Cursor) ([]models.Upvote, error) {
+	result := []models.Upvote{}
+	for cur.Next(repository.ctx) {
+		upvote := models.Upvote{}
+		err := cur.Decode(&upvote)
+		if err != nil {
+			return result, err
+		}
+		result = append(result, upvote)
+	}
+	return result, nil
 }
 
 func (repository *UpvoteRepository) Insert(upvote models.Upvote) (string, error) {
