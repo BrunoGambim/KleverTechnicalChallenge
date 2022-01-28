@@ -17,37 +17,37 @@ const (
 	COMMENTS_COLLECTION = "comments"
 )
 
-var repositoryInstance *CommentRepository
-var repositoryInstanceError error
-var repositoryOnce sync.Once
+var commentRepositoryInstance *CommentRepository
+var commentRepositoryInstanceError error
+var commentRepositoryOnce sync.Once
 
 type CommentRepository struct {
 	sync.Mutex
 	collection *mongo.Collection
-	context    context.Context
+	ctx        context.Context
 }
 
 func NewCommentRepository() (*CommentRepository, error) {
-	repositoryOnce.Do(func() {
-		context := context.Background()
-		client, err := connectionFactory.GetMongoClient(context)
+	commentRepositoryOnce.Do(func() {
+		ctx := context.Background()
+		client, err := connectionFactory.GetMongoClient(ctx)
 
 		if err != nil {
-			repositoryInstance = &CommentRepository{}
-			repositoryInstanceError = err
+			commentRepositoryInstance = &CommentRepository{}
+			commentRepositoryInstanceError = err
 		}
 
-		repositoryInstance = &CommentRepository{
+		commentRepositoryInstance = &CommentRepository{
 			collection: client.Database(DATABASE_NAME).Collection(COMMENTS_COLLECTION),
-			context:    context,
+			ctx:        ctx,
 		}
-		repositoryInstanceError = nil
+		commentRepositoryInstanceError = nil
 	})
-	return repositoryInstance, repositoryInstanceError
+	return commentRepositoryInstance, commentRepositoryInstanceError
 }
 
 func (repository *CommentRepository) Insert(comment models.Comment) (string, error) {
-	result, err := repository.collection.InsertOne(repository.context, comment)
+	result, err := repository.collection.InsertOne(repository.ctx, comment)
 	if err != nil {
 		return "", err
 	}
@@ -59,12 +59,12 @@ func (repository *CommentRepository) FindAll() ([]models.Comment, error) {
 	comments := []models.Comment{}
 	filter := bson.M{}
 
-	cur, err := repository.collection.Find(repository.context, filter)
+	cur, err := repository.collection.Find(repository.ctx, filter)
 	if err != nil {
 		return comments, err
 	}
 
-	for cur.Next(repository.context) {
+	for cur.Next(repository.ctx) {
 		comment := models.Comment{}
 		err := cur.Decode(&comment)
 		if err != nil {

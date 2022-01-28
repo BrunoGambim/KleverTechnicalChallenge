@@ -6,7 +6,7 @@ import (
 
 func getCommentDtoFromModel(comment models.Comment) *GetCommentDTO {
 	return &GetCommentDTO{
-		Id:      comment.ID.Hex(),
+		Id:      comment.Id.Hex(),
 		Message: comment.Message,
 	}
 }
