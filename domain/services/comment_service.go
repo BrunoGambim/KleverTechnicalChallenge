@@ -9,11 +9,7 @@ type CommentService struct {
 	commentRepository comment_repository.CommentRepository
 }
 
-func NewCommentService() (*CommentService, error) {
-	repository, err := comment_repository.NewCommentRepository()
-	if err != nil {
-		return &CommentService{}, err
-	}
+func NewCommentService(repository comment_repository.CommentRepository) (*CommentService, error) {
 	return &CommentService{
 		commentRepository: repository,
 	}, nil

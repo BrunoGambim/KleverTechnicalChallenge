@@ -5,6 +5,7 @@ import (
 	"log"
 
 	controllers_utils "KleverTechnicalChallenge/controllers/utils"
+	comment_repository "KleverTechnicalChallenge/database/repositories/comment_repository"
 	services "KleverTechnicalChallenge/domain/services"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -16,7 +17,12 @@ type CommentController struct {
 }
 
 func NewCommentController() *CommentController {
-	service, err := services.NewCommentService()
+	repository, err := comment_repository.NewCommentRepository()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	service, err := services.NewCommentService(repository)
 	if err != nil {
 		log.Fatal(err)
 	}

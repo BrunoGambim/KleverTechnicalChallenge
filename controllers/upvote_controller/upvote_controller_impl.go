@@ -5,6 +5,7 @@ import (
 	"log"
 
 	controllers_utils "KleverTechnicalChallenge/controllers/utils"
+	upvote_repository "KleverTechnicalChallenge/database/repositories/upvote_repository"
 	services "KleverTechnicalChallenge/domain/services"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -16,7 +17,12 @@ type UpvoteController struct {
 }
 
 func NewUpvoteController() *UpvoteController {
-	service, err := services.NewUpvoteService()
+	repository, err := upvote_repository.NewUpvoteRepository()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	service, err := services.NewUpvoteService(repository)
 	if err != nil {
 		log.Fatal(err)
 	}

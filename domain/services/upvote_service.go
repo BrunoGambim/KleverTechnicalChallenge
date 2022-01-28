@@ -10,11 +10,7 @@ type UpvoteService struct {
 	upvoteRepository upvote_repository.UpvoteRepository
 }
 
-func NewUpvoteService() (*UpvoteService, error) {
-	repository, err := upvote_repository.NewUpvoteRepository()
-	if err != nil {
-		return &UpvoteService{}, err
-	}
+func NewUpvoteService(repository upvote_repository.UpvoteRepository) (*UpvoteService, error) {
 	return &UpvoteService{
 		upvoteRepository: repository,
 	}, nil

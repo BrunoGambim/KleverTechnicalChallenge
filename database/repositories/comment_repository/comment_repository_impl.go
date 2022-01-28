@@ -34,10 +34,9 @@ func NewCommentRepository() (*CommentRepositoryImpl, error) {
 		}
 
 		databaseName := os.Getenv("DATABASE_NAME")
-		commentsCollection := os.Getenv("COMMENTS_COLLECTION")
-
+		commentCollection := os.Getenv("COMMENTS_COLLECTION")
 		commentRepositoryInstance = &CommentRepositoryImpl{
-			collection: client.Database(databaseName).Collection(commentsCollection),
+			collection: client.Database(databaseName).Collection(commentCollection),
 			ctx:        ctx,
 		}
 		commentRepositoryInstanceError = nil

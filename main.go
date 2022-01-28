@@ -29,7 +29,6 @@ func loadEnvFiles() {
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
-
 }
 
 func main() {
