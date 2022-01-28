@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	controllers_utils "KleverTechnicalChallenge/controllers/utils"
 	services "KleverTechnicalChallenge/domain/services"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -28,8 +29,7 @@ func NewCommentController() *CommentController {
 func (controller *CommentController) GetAllComments(e *empty.Empty, stream CommentController_GetAllCommentsServer) error {
 	commentList, err := controller.commentService.FindAll()
 	if err != nil {
-		log.Printf(err.Error())
-		return nil
+		return controllers_utils.HandleUnknownError(err)
 	}
 	for _, comment := range commentList {
 		stream.Send(getCommentDtoFromModel(comment))
@@ -41,8 +41,7 @@ func (controller *CommentController) CreateComment(ctx context.Context, commentD
 	comment := commentFromCreateDto(commentDto)
 	_, err := controller.commentService.Insert(comment)
 	if err != nil {
-		log.Printf(err.Error())
-		return &empty.Empty{}, nil
+		return &empty.Empty{}, controllers_utils.HandleUnknownError(err)
 	}
 	return &empty.Empty{}, nil
 }
