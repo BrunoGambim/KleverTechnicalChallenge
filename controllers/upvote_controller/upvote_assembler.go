@@ -13,3 +13,11 @@ func upvoteFromCreateDto(upvoteDto *CreateUpvoteDTO) (models.Upvote, error) {
 		CommentId: commentId,
 	}, err
 }
+
+func getAlbumDtoFromModel(upvote models.Upvote) *GetUpvoteDTO {
+	return &GetUpvoteDTO{
+		Id:        upvote.Id.Hex(),
+		Type:      upvote.Type,
+		CommentId: upvote.Id.Hex(),
+	}
+}

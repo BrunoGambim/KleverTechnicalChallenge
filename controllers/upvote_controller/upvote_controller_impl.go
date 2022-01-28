@@ -25,6 +25,17 @@ func NewUpvoteController() *UpvoteController {
 	}
 }
 
+func (controller *UpvoteController) GetUpvote(ctx context.Context, idDTO *IdDTO) (*GetUpvoteDTO, error) {
+	id := idDTO.Id
+	upvote, err := controller.upvoteService.FindById(id)
+	if err != nil {
+		log.Printf(err.Error())
+		return &GetUpvoteDTO{}, nil
+	}
+	response := getAlbumDtoFromModel(upvote)
+	return response, nil
+}
+
 func (controller *UpvoteController) CreateUpvote(ctx context.Context, upvoteDto *CreateUpvoteDTO) (*empty.Empty, error) {
 	upvote, err := upvoteFromCreateDto(upvoteDto)
 	if err != nil {
@@ -36,6 +47,14 @@ func (controller *UpvoteController) CreateUpvote(ctx context.Context, upvoteDto 
 	if err != nil {
 		log.Printf(err.Error())
 		return &empty.Empty{}, nil
+	}
+	return &empty.Empty{}, nil
+}
+
+func (controller *UpvoteController) DeleteUpvote(ctx context.Context, idDto *IdDTO) (*empty.Empty, error) {
+	err := controller.upvoteService.DeleteById(idDto.Id)
+	if err != nil {
+		log.Printf(err.Error())
 	}
 	return &empty.Empty{}, nil
 }

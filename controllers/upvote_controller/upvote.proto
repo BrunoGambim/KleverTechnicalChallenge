@@ -23,7 +23,7 @@ message IdDTO {
 message GetUpvoteDTO {
   string id = 1;
   string createdAt = 2;
-  Type type = 3;
+  string type = 3;
   string commentId = 4;
 }
 
