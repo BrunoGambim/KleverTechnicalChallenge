@@ -4,15 +4,18 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	comment_controller "KleverTechnicalChallenge/controllers/comment_controller"
 	upvote_controller "KleverTechnicalChallenge/controllers/upvote_controller"
 
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 )
 
-func getNetListener(port uint) net.Listener {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+func getNetListener() net.Listener {
+	port := os.Getenv("PORT")
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		panic(fmt.Sprintf(err.Error()))
 	}
@@ -20,8 +23,19 @@ func getNetListener(port uint) net.Listener {
 	return lis
 }
 
+func loadEnvFiles() {
+	err := godotenv.Overload(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+}
+
 func main() {
-	list := getNetListener(9000)
+	loadEnvFiles()
+
+	list := getNetListener()
 	grpcServer := grpc.NewServer()
 
 	comment_controller.RegisterCommentControllerServer(grpcServer, comment_controller.NewCommentController())

@@ -3,6 +3,7 @@ package repositories
 import (
 	connectionFactory "KleverTechnicalChallenge/database/connection"
 	models "KleverTechnicalChallenge/domain/models"
+	"os"
 
 	"context"
 	"sync"
@@ -10,11 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-)
-
-const (
-	DATABASE_NAME       = "KleverTechnicalChallenge"
-	COMMENTS_COLLECTION = "comments"
 )
 
 var commentRepositoryInstance *CommentRepository
@@ -37,8 +33,11 @@ func NewCommentRepository() (*CommentRepository, error) {
 			commentRepositoryInstanceError = err
 		}
 
+		databaseName := os.Getenv("DATABASE_NAME")
+		commentsCollection := os.Getenv("COMMENTS_COLLECTION")
+
 		commentRepositoryInstance = &CommentRepository{
-			collection: client.Database(DATABASE_NAME).Collection(COMMENTS_COLLECTION),
+			collection: client.Database(databaseName).Collection(commentsCollection),
 			ctx:        ctx,
 		}
 		commentRepositoryInstanceError = nil

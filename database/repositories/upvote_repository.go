@@ -4,15 +4,12 @@ import (
 	connectionFactory "KleverTechnicalChallenge/database/connection"
 	"KleverTechnicalChallenge/domain/models"
 	"context"
+	"os"
 	"sync"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-)
-
-const (
-	UPVOTES_COLLECTION = "upvotes"
 )
 
 var upvoteRepositoryInstance *UpvoteRepository
@@ -35,8 +32,10 @@ func NewUpvoteRepository() (*UpvoteRepository, error) {
 			upvoteRepositoryInstanceError = err
 		}
 
+		databaseName := os.Getenv("DATABASE_NAME")
+		upvotesCollection := os.Getenv("UPVOTES_COLLECTION")
 		upvoteRepositoryInstance = &UpvoteRepository{
-			collection: client.Database(DATABASE_NAME).Collection(UPVOTES_COLLECTION),
+			collection: client.Database(databaseName).Collection(upvotesCollection),
 			ctx:        ctx,
 		}
 		upvoteRepositoryInstanceError = nil

@@ -3,14 +3,11 @@ package connection
 import (
 	"context"
 	"log"
+	"os"
 	"sync"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-)
-
-const (
-	CONNECTION_STRING = "mongodb://localhost:27017/"
 )
 
 var clientInstance *mongo.Client
@@ -21,7 +18,8 @@ var mongoOnce sync.Once
 
 func GetMongoClient(context context.Context) (*mongo.Client, error) {
 	mongoOnce.Do(func() {
-		clientOptions := options.Client().ApplyURI(CONNECTION_STRING)
+		databaseConnection := os.Getenv("DATABASE_CONNECTION")
+		clientOptions := options.Client().ApplyURI(databaseConnection)
 		client, err := mongo.Connect(context, clientOptions)
 		if err != nil {
 			clientInstanceError = err
