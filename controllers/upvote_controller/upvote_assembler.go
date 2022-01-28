@@ -16,6 +16,13 @@ func upvoteFromCreateDto(upvoteDto *CreateUpvoteDTO) (models.Upvote, error) {
 	}, err
 }
 
+func idFromDto(idDto *IdDTO) (string, error) {
+	if !primitive.IsValidObjectID(idDto.Id) {
+		return "", primitive.ErrInvalidHex
+	}
+	return idDto.Id, nil
+}
+
 func getAlbumDtoFromModel(upvote models.Upvote) *GetUpvoteDTO {
 	createdAtTime := time.Unix(int64(upvote.CreatedAt), 0)
 	createdAt := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d",
