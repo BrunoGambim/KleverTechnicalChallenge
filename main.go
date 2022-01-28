@@ -6,6 +6,7 @@ import (
 	"net"
 
 	comment_controller "KleverTechnicalChallenge/controllers/comment_controller"
+	upvote_controller "KleverTechnicalChallenge/controllers/upvote_controller"
 
 	"google.golang.org/grpc"
 )
@@ -24,6 +25,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 
 	comment_controller.RegisterCommentControllerServer(grpcServer, comment_controller.NewCommentController())
+	upvote_controller.RegisterUpvoteControllerServer(grpcServer, upvote_controller.NewUpvoteController())
 
 	err := grpcServer.Serve(list)
 	if err != nil {

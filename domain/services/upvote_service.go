@@ -3,6 +3,7 @@ package services
 import (
 	repositories "KleverTechnicalChallenge/database/repositories"
 	models "KleverTechnicalChallenge/domain/models"
+	"time"
 )
 
 type UpvoteService struct {
@@ -29,6 +30,7 @@ func (service *UpvoteService) FindById(id string) (models.Upvote, error) {
 func (service *UpvoteService) Insert(upvote models.Upvote) (string, error) {
 	service.upvoteRepository.Lock()
 	defer service.upvoteRepository.Unlock()
+	upvote.CreatedAt = uint64(time.Now().Unix())
 	id, err := service.upvoteRepository.Insert(upvote)
 	return id, err
 }
