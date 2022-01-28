@@ -6,7 +6,7 @@ import "google/protobuf/empty.proto";
 option go_package = "./controllers/upvote_controller";
 
 service UpvoteController {
-  rpc GetUpvote(IdDTO) returns (GetUpvoteDTO) {}
+  rpc GetUpvoteById(IdDTO) returns (GetUpvoteDTO) {}
   rpc CreateUpvote(CreateUpvoteDTO) returns (google.protobuf.Empty) {}
   rpc DeleteUpvote(IdDTO) returns (google.protobuf.Empty) {}
 }

@@ -6,7 +6,7 @@ import "google/protobuf/empty.proto";
 option go_package = "./controllers/comment_controller";
 
 service CommentController {
-  rpc FindAllComments(google.protobuf.Empty) returns (GetAllCommentDTO) {}
+  rpc GetAllComments(google.protobuf.Empty) returns (GetAllCommentDTO) {}
   rpc CreateComment(CreateCommentDTO) returns (google.protobuf.Empty) {}
 }
 

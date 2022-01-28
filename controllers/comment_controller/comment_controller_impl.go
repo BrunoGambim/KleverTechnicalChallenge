@@ -25,7 +25,7 @@ func NewCommentController() *CommentController {
 	}
 }
 
-func (controller *CommentController) FindAllComments(ctx context.Context, e *empty.Empty) (*GetAllCommentDTO, error) {
+func (controller *CommentController) GetAllComments(ctx context.Context, e *empty.Empty) (*GetAllCommentDTO, error) {
 	commentList, err := controller.commentService.FindAll()
 	if err != nil {
 		log.Printf(err.Error())

@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CommentControllerClient interface {
-	FindAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error)
+	GetAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error)
 	CreateComment(ctx context.Context, in *CreateCommentDTO, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
@@ -31,9 +31,9 @@ func NewCommentControllerClient(cc grpc.ClientConnInterface) CommentControllerCl
 	return &commentControllerClient{cc}
 }
 
-func (c *commentControllerClient) FindAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error) {
+func (c *commentControllerClient) GetAllComments(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetAllCommentDTO, error) {
 	out := new(GetAllCommentDTO)
-	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.CommentController/FindAllComments", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.CommentController/GetAllComments", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (c *commentControllerClient) CreateComment(ctx context.Context, in *CreateC
 // All implementations must embed UnimplementedCommentControllerServer
 // for forward compatibility
 type CommentControllerServer interface {
-	FindAllComments(context.Context, *empty.Empty) (*GetAllCommentDTO, error)
+	GetAllComments(context.Context, *empty.Empty) (*GetAllCommentDTO, error)
 	CreateComment(context.Context, *CreateCommentDTO) (*empty.Empty, error)
 	mustEmbedUnimplementedCommentControllerServer()
 }
@@ -62,8 +62,8 @@ type CommentControllerServer interface {
 type UnimplementedCommentControllerServer struct {
 }
 
-func (UnimplementedCommentControllerServer) FindAllComments(context.Context, *empty.Empty) (*GetAllCommentDTO, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindAllComments not implemented")
+func (UnimplementedCommentControllerServer) GetAllComments(context.Context, *empty.Empty) (*GetAllCommentDTO, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllComments not implemented")
 }
 func (UnimplementedCommentControllerServer) CreateComment(context.Context, *CreateCommentDTO) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
@@ -81,20 +81,20 @@ func RegisterCommentControllerServer(s grpc.ServiceRegistrar, srv CommentControl
 	s.RegisterService(&CommentController_ServiceDesc, srv)
 }
 
-func _CommentController_FindAllComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CommentController_GetAllComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(empty.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CommentControllerServer).FindAllComments(ctx, in)
+		return srv.(CommentControllerServer).GetAllComments(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/KleverTechnicalChallenge.CommentController/FindAllComments",
+		FullMethod: "/KleverTechnicalChallenge.CommentController/GetAllComments",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommentControllerServer).FindAllComments(ctx, req.(*empty.Empty))
+		return srv.(CommentControllerServer).GetAllComments(ctx, req.(*empty.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -125,8 +125,8 @@ var CommentController_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CommentControllerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "FindAllComments",
-			Handler:    _CommentController_FindAllComments_Handler,
+			MethodName: "GetAllComments",
+			Handler:    _CommentController_GetAllComments_Handler,
 		},
 		{
 			MethodName: "CreateComment",

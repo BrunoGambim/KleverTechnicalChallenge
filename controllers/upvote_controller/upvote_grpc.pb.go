@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UpvoteControllerClient interface {
-	GetUpvote(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (*GetUpvoteDTO, error)
+	GetUpvoteById(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (*GetUpvoteDTO, error)
 	CreateUpvote(ctx context.Context, in *CreateUpvoteDTO, opts ...grpc.CallOption) (*empty.Empty, error)
 	DeleteUpvote(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (*empty.Empty, error)
 }
@@ -32,9 +32,9 @@ func NewUpvoteControllerClient(cc grpc.ClientConnInterface) UpvoteControllerClie
 	return &upvoteControllerClient{cc}
 }
 
-func (c *upvoteControllerClient) GetUpvote(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (*GetUpvoteDTO, error) {
+func (c *upvoteControllerClient) GetUpvoteById(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (*GetUpvoteDTO, error) {
 	out := new(GetUpvoteDTO)
-	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.UpvoteController/GetUpvote", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/KleverTechnicalChallenge.UpvoteController/GetUpvoteById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (c *upvoteControllerClient) DeleteUpvote(ctx context.Context, in *IdDTO, op
 // All implementations must embed UnimplementedUpvoteControllerServer
 // for forward compatibility
 type UpvoteControllerServer interface {
-	GetUpvote(context.Context, *IdDTO) (*GetUpvoteDTO, error)
+	GetUpvoteById(context.Context, *IdDTO) (*GetUpvoteDTO, error)
 	CreateUpvote(context.Context, *CreateUpvoteDTO) (*empty.Empty, error)
 	DeleteUpvote(context.Context, *IdDTO) (*empty.Empty, error)
 	mustEmbedUnimplementedUpvoteControllerServer()
@@ -73,8 +73,8 @@ type UpvoteControllerServer interface {
 type UnimplementedUpvoteControllerServer struct {
 }
 
-func (UnimplementedUpvoteControllerServer) GetUpvote(context.Context, *IdDTO) (*GetUpvoteDTO, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUpvote not implemented")
+func (UnimplementedUpvoteControllerServer) GetUpvoteById(context.Context, *IdDTO) (*GetUpvoteDTO, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUpvoteById not implemented")
 }
 func (UnimplementedUpvoteControllerServer) CreateUpvote(context.Context, *CreateUpvoteDTO) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUpvote not implemented")
@@ -95,20 +95,20 @@ func RegisterUpvoteControllerServer(s grpc.ServiceRegistrar, srv UpvoteControlle
 	s.RegisterService(&UpvoteController_ServiceDesc, srv)
 }
 
-func _UpvoteController_GetUpvote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UpvoteController_GetUpvoteById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IdDTO)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UpvoteControllerServer).GetUpvote(ctx, in)
+		return srv.(UpvoteControllerServer).GetUpvoteById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/KleverTechnicalChallenge.UpvoteController/GetUpvote",
+		FullMethod: "/KleverTechnicalChallenge.UpvoteController/GetUpvoteById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UpvoteControllerServer).GetUpvote(ctx, req.(*IdDTO))
+		return srv.(UpvoteControllerServer).GetUpvoteById(ctx, req.(*IdDTO))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -157,8 +157,8 @@ var UpvoteController_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UpvoteControllerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetUpvote",
-			Handler:    _UpvoteController_GetUpvote_Handler,
+			MethodName: "GetUpvoteById",
+			Handler:    _UpvoteController_GetUpvoteById_Handler,
 		},
 		{
 			MethodName: "CreateUpvote",

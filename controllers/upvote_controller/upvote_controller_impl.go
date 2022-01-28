@@ -25,7 +25,7 @@ func NewUpvoteController() *UpvoteController {
 	}
 }
 
-func (controller *UpvoteController) GetUpvote(ctx context.Context, idDTO *IdDTO) (*GetUpvoteDTO, error) {
+func (controller *UpvoteController) GetUpvoteById(ctx context.Context, idDTO *IdDTO) (*GetUpvoteDTO, error) {
 	id := idDTO.Id
 	upvote, err := controller.upvoteService.FindById(id)
 	if err != nil {
