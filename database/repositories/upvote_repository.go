@@ -60,6 +60,23 @@ func (repository *UpvoteRepository) FindById(id string) ([]models.Upvote, error)
 	return result, err
 }
 
+func (repository *UpvoteRepository) FindByCommentId(commentId string) ([]models.Upvote, error) {
+	objectId, err := primitive.ObjectIDFromHex(commentId)
+	if err != nil {
+		return []models.Upvote{}, err
+	}
+
+	filter := bson.M{"comment_id": objectId}
+	cur, err := repository.collection.Find(repository.ctx, filter)
+
+	if err != nil {
+		return []models.Upvote{}, err
+	}
+
+	result, err := repository.upvoteListFromCur(cur)
+	return result, err
+}
+
 func (repository *UpvoteRepository) upvoteListFromCur(cur *mongo.Cursor) ([]models.Upvote, error) {
 	result := []models.Upvote{}
 	for cur.Next(repository.ctx) {

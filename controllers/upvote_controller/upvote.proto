@@ -7,6 +7,7 @@ option go_package = "./controllers/upvote_controller";
 
 service UpvoteController {
   rpc GetUpvoteById(IdDTO) returns (GetUpvoteDTO) {}
+  rpc GetUpvotesByCommentId(IdDTO) returns (stream GetUpvoteDTO) {}
   rpc CreateUpvote(CreateUpvoteDTO) returns (google.protobuf.Empty) {}
   rpc DeleteUpvote(IdDTO) returns (google.protobuf.Empty) {}
 }

@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UpvoteControllerClient interface {
 	GetUpvoteById(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (*GetUpvoteDTO, error)
+	GetUpvotesByCommentId(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (UpvoteController_GetUpvotesByCommentIdClient, error)
 	CreateUpvote(ctx context.Context, in *CreateUpvoteDTO, opts ...grpc.CallOption) (*empty.Empty, error)
 	DeleteUpvote(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (*empty.Empty, error)
 }
@@ -39,6 +40,38 @@ func (c *upvoteControllerClient) GetUpvoteById(ctx context.Context, in *IdDTO, o
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *upvoteControllerClient) GetUpvotesByCommentId(ctx context.Context, in *IdDTO, opts ...grpc.CallOption) (UpvoteController_GetUpvotesByCommentIdClient, error) {
+	stream, err := c.cc.NewStream(ctx, &UpvoteController_ServiceDesc.Streams[0], "/KleverTechnicalChallenge.UpvoteController/GetUpvotesByCommentId", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &upvoteControllerGetUpvotesByCommentIdClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type UpvoteController_GetUpvotesByCommentIdClient interface {
+	Recv() (*GetUpvoteDTO, error)
+	grpc.ClientStream
+}
+
+type upvoteControllerGetUpvotesByCommentIdClient struct {
+	grpc.ClientStream
+}
+
+func (x *upvoteControllerGetUpvotesByCommentIdClient) Recv() (*GetUpvoteDTO, error) {
+	m := new(GetUpvoteDTO)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func (c *upvoteControllerClient) CreateUpvote(ctx context.Context, in *CreateUpvoteDTO, opts ...grpc.CallOption) (*empty.Empty, error) {
@@ -64,6 +97,7 @@ func (c *upvoteControllerClient) DeleteUpvote(ctx context.Context, in *IdDTO, op
 // for forward compatibility
 type UpvoteControllerServer interface {
 	GetUpvoteById(context.Context, *IdDTO) (*GetUpvoteDTO, error)
+	GetUpvotesByCommentId(*IdDTO, UpvoteController_GetUpvotesByCommentIdServer) error
 	CreateUpvote(context.Context, *CreateUpvoteDTO) (*empty.Empty, error)
 	DeleteUpvote(context.Context, *IdDTO) (*empty.Empty, error)
 	mustEmbedUnimplementedUpvoteControllerServer()
@@ -75,6 +109,9 @@ type UnimplementedUpvoteControllerServer struct {
 
 func (UnimplementedUpvoteControllerServer) GetUpvoteById(context.Context, *IdDTO) (*GetUpvoteDTO, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUpvoteById not implemented")
+}
+func (UnimplementedUpvoteControllerServer) GetUpvotesByCommentId(*IdDTO, UpvoteController_GetUpvotesByCommentIdServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetUpvotesByCommentId not implemented")
 }
 func (UnimplementedUpvoteControllerServer) CreateUpvote(context.Context, *CreateUpvoteDTO) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUpvote not implemented")
@@ -111,6 +148,27 @@ func _UpvoteController_GetUpvoteById_Handler(srv interface{}, ctx context.Contex
 		return srv.(UpvoteControllerServer).GetUpvoteById(ctx, req.(*IdDTO))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _UpvoteController_GetUpvotesByCommentId_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(IdDTO)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(UpvoteControllerServer).GetUpvotesByCommentId(m, &upvoteControllerGetUpvotesByCommentIdServer{stream})
+}
+
+type UpvoteController_GetUpvotesByCommentIdServer interface {
+	Send(*GetUpvoteDTO) error
+	grpc.ServerStream
+}
+
+type upvoteControllerGetUpvotesByCommentIdServer struct {
+	grpc.ServerStream
+}
+
+func (x *upvoteControllerGetUpvotesByCommentIdServer) Send(m *GetUpvoteDTO) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _UpvoteController_CreateUpvote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -169,6 +227,12 @@ var UpvoteController_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UpvoteController_DeleteUpvote_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetUpvotesByCommentId",
+			Handler:       _UpvoteController_GetUpvotesByCommentId_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "controllers/upvote_controller/upvote.proto",
 }

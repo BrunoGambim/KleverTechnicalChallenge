@@ -40,6 +40,19 @@ func (controller *UpvoteController) GetUpvoteById(ctx context.Context, idDTO *Id
 	return response, nil
 }
 
+func (controller *UpvoteController) GetUpvotesByCommentId(idDTO *IdDTO, stream UpvoteController_GetUpvotesByCommentIdServer) error {
+	id := idDTO.Id
+	upvotes, err := controller.upvoteService.FindByCommentId(id)
+	if err != nil {
+		log.Printf(err.Error())
+		return nil
+	}
+	for _, upvote := range upvotes {
+		stream.Send(getAlbumDtoFromModel(upvote))
+	}
+	return nil
+}
+
 func (controller *UpvoteController) CreateUpvote(ctx context.Context, upvoteDto *CreateUpvoteDTO) (*empty.Empty, error) {
 	upvote, err := upvoteFromCreateDto(upvoteDto)
 	if err != nil {

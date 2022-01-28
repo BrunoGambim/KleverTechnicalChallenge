@@ -27,6 +27,13 @@ func (service *UpvoteService) FindById(id string) ([]models.Upvote, error) {
 	return upvote, err
 }
 
+func (service *UpvoteService) FindByCommentId(commentId string) ([]models.Upvote, error) {
+	service.upvoteRepository.Lock()
+	defer service.upvoteRepository.Unlock()
+	upvote, err := service.upvoteRepository.FindByCommentId(commentId)
+	return upvote, err
+}
+
 func (service *UpvoteService) Insert(upvote models.Upvote) (string, error) {
 	service.upvoteRepository.Lock()
 	defer service.upvoteRepository.Unlock()
