@@ -1,17 +1,17 @@
 package services
 
 import (
-	repositories "KleverTechnicalChallenge/database/repositories"
+	upvote_repository "KleverTechnicalChallenge/database/repositories/upvote_repository"
 	models "KleverTechnicalChallenge/domain/models"
 	"time"
 )
 
 type UpvoteService struct {
-	upvoteRepository *repositories.UpvoteRepository
+	upvoteRepository upvote_repository.UpvoteRepository
 }
 
 func NewUpvoteService() (*UpvoteService, error) {
-	repository, err := repositories.NewUpvoteRepository()
+	repository, err := upvote_repository.NewUpvoteRepository()
 	if err != nil {
 		return &UpvoteService{}, err
 	}

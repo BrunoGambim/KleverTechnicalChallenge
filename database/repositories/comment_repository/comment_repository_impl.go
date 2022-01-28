@@ -1,4 +1,4 @@
-package repositories
+package comment_repository
 
 import (
 	connectionFactory "KleverTechnicalChallenge/database/connection"
@@ -13,30 +13,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var commentRepositoryInstance *CommentRepository
+var commentRepositoryInstance *CommentRepositoryImpl
 var commentRepositoryInstanceError error
 var commentRepositoryOnce sync.Once
 
-type CommentRepository struct {
+type CommentRepositoryImpl struct {
 	sync.Mutex
 	collection *mongo.Collection
 	ctx        context.Context
 }
 
-func NewCommentRepository() (*CommentRepository, error) {
+func NewCommentRepository() (*CommentRepositoryImpl, error) {
 	commentRepositoryOnce.Do(func() {
 		ctx := context.Background()
 		client, err := connectionFactory.GetMongoClient(ctx)
 
 		if err != nil {
-			commentRepositoryInstance = &CommentRepository{}
+			commentRepositoryInstance = &CommentRepositoryImpl{}
 			commentRepositoryInstanceError = err
 		}
 
 		databaseName := os.Getenv("DATABASE_NAME")
 		commentsCollection := os.Getenv("COMMENTS_COLLECTION")
 
-		commentRepositoryInstance = &CommentRepository{
+		commentRepositoryInstance = &CommentRepositoryImpl{
 			collection: client.Database(databaseName).Collection(commentsCollection),
 			ctx:        ctx,
 		}
@@ -45,7 +45,7 @@ func NewCommentRepository() (*CommentRepository, error) {
 	return commentRepositoryInstance, commentRepositoryInstanceError
 }
 
-func (repository *CommentRepository) Insert(comment models.Comment) (string, error) {
+func (repository *CommentRepositoryImpl) Insert(comment models.Comment) (string, error) {
 	result, err := repository.collection.InsertOne(repository.ctx, comment)
 	if err != nil {
 		return "", err
@@ -54,7 +54,7 @@ func (repository *CommentRepository) Insert(comment models.Comment) (string, err
 	return id, err
 }
 
-func (repository *CommentRepository) FindAll() ([]models.Comment, error) {
+func (repository *CommentRepositoryImpl) FindAll() ([]models.Comment, error) {
 	filter := bson.M{}
 
 	cur, err := repository.collection.Find(repository.ctx, filter)
@@ -67,7 +67,7 @@ func (repository *CommentRepository) FindAll() ([]models.Comment, error) {
 	return result, err
 }
 
-func (repository *CommentRepository) commentListFromCur(cur *mongo.Cursor) ([]models.Comment, error) {
+func (repository *CommentRepositoryImpl) commentListFromCur(cur *mongo.Cursor) ([]models.Comment, error) {
 	result := []models.Comment{}
 	for cur.Next(repository.ctx) {
 		comment := models.Comment{}

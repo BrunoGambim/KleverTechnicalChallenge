@@ -1,4 +1,4 @@
-package repositories
+package upvote_repository
 
 import (
 	connectionFactory "KleverTechnicalChallenge/database/connection"
@@ -12,29 +12,29 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var upvoteRepositoryInstance *UpvoteRepository
+var upvoteRepositoryInstance *UpvoteRepositoryImpl
 var upvoteRepositoryInstanceError error
 var upvoteRepositoryOnce sync.Once
 
-type UpvoteRepository struct {
+type UpvoteRepositoryImpl struct {
 	sync.Mutex
 	collection *mongo.Collection
 	ctx        context.Context
 }
 
-func NewUpvoteRepository() (*UpvoteRepository, error) {
+func NewUpvoteRepository() (*UpvoteRepositoryImpl, error) {
 	upvoteRepositoryOnce.Do(func() {
 		ctx := context.Background()
 		client, err := connectionFactory.GetMongoClient(ctx)
 
 		if err != nil {
-			upvoteRepositoryInstance = &UpvoteRepository{}
+			upvoteRepositoryInstance = &UpvoteRepositoryImpl{}
 			upvoteRepositoryInstanceError = err
 		}
 
 		databaseName := os.Getenv("DATABASE_NAME")
 		upvotesCollection := os.Getenv("UPVOTES_COLLECTION")
-		upvoteRepositoryInstance = &UpvoteRepository{
+		upvoteRepositoryInstance = &UpvoteRepositoryImpl{
 			collection: client.Database(databaseName).Collection(upvotesCollection),
 			ctx:        ctx,
 		}
@@ -43,7 +43,7 @@ func NewUpvoteRepository() (*UpvoteRepository, error) {
 	return upvoteRepositoryInstance, upvoteRepositoryInstanceError
 }
 
-func (repository *UpvoteRepository) FindById(id string) ([]models.Upvote, error) {
+func (repository *UpvoteRepositoryImpl) FindById(id string) ([]models.Upvote, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return []models.Upvote{}, err
@@ -60,7 +60,7 @@ func (repository *UpvoteRepository) FindById(id string) ([]models.Upvote, error)
 	return result, err
 }
 
-func (repository *UpvoteRepository) FindByCommentId(commentId string) ([]models.Upvote, error) {
+func (repository *UpvoteRepositoryImpl) FindByCommentId(commentId string) ([]models.Upvote, error) {
 	objectId, err := primitive.ObjectIDFromHex(commentId)
 	if err != nil {
 		return []models.Upvote{}, err
@@ -77,7 +77,7 @@ func (repository *UpvoteRepository) FindByCommentId(commentId string) ([]models.
 	return result, err
 }
 
-func (repository *UpvoteRepository) upvoteListFromCur(cur *mongo.Cursor) ([]models.Upvote, error) {
+func (repository *UpvoteRepositoryImpl) upvoteListFromCur(cur *mongo.Cursor) ([]models.Upvote, error) {
 	result := []models.Upvote{}
 	for cur.Next(repository.ctx) {
 		upvote := models.Upvote{}
@@ -90,7 +90,7 @@ func (repository *UpvoteRepository) upvoteListFromCur(cur *mongo.Cursor) ([]mode
 	return result, nil
 }
 
-func (repository *UpvoteRepository) Insert(upvote models.Upvote) (string, error) {
+func (repository *UpvoteRepositoryImpl) Insert(upvote models.Upvote) (string, error) {
 	result, err := repository.collection.InsertOne(repository.ctx, upvote)
 	if err != nil {
 		return "", err
@@ -99,7 +99,7 @@ func (repository *UpvoteRepository) Insert(upvote models.Upvote) (string, error)
 	return id, err
 }
 
-func (repository *UpvoteRepository) DeleteById(id string) error {
+func (repository *UpvoteRepositoryImpl) DeleteById(id string) error {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err

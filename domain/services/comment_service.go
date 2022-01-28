@@ -1,16 +1,16 @@
 package services
 
 import (
-	repositories "KleverTechnicalChallenge/database/repositories"
+	comment_repository "KleverTechnicalChallenge/database/repositories/comment_repository"
 	models "KleverTechnicalChallenge/domain/models"
 )
 
 type CommentService struct {
-	commentRepository *repositories.CommentRepository
+	commentRepository comment_repository.CommentRepository
 }
 
 func NewCommentService() (*CommentService, error) {
-	repository, err := repositories.NewCommentRepository()
+	repository, err := comment_repository.NewCommentRepository()
 	if err != nil {
 		return &CommentService{}, err
 	}
