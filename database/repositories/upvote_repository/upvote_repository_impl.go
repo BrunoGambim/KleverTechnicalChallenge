@@ -22,7 +22,7 @@ type UpvoteRepositoryImpl struct {
 	ctx        context.Context
 }
 
-func NewUpvoteRepository() (*UpvoteRepositoryImpl, error) {
+func NewUpvoteRepository() (UpvoteRepository, error) {
 	upvoteRepositoryOnce.Do(func() {
 		ctx := context.Background()
 		client, err := connectionFactory.GetMongoClient(ctx)
@@ -43,23 +43,24 @@ func NewUpvoteRepository() (*UpvoteRepositoryImpl, error) {
 	return upvoteRepositoryInstance, upvoteRepositoryInstanceError
 }
 
-func (repository *UpvoteRepositoryImpl) FindById(id string) ([]models.Upvote, error) {
+func (repository *UpvoteRepositoryImpl) FindById(id string) (models.Upvote, error) {
+	result := models.Upvote{}
+
 	repository.Lock()
 	defer repository.Unlock()
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return []models.Upvote{}, err
+		return result, err
 	}
 
 	filter := bson.M{"_id": objectId}
-	cur, err := repository.collection.Find(repository.ctx, filter)
+	err = repository.collection.FindOne(repository.ctx, filter).Decode(&result)
 
 	if err != nil {
-		return []models.Upvote{}, err
+		return result, err
 	}
 
-	result, err := repository.upvoteListFromCur(cur)
 	return result, err
 }
 

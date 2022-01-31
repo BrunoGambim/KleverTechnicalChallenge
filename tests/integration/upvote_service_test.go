@@ -32,19 +32,19 @@ func TestUpvoteService(t *testing.T) {
 		t.Errorf("Erro ao inserir ou ler dados na base de dados")
 	}
 
-	upvote, _ := upvoteService.FindById(id)
+	upvote, err := upvoteService.FindById(id)
 
-	if !primitive.IsValidObjectID(id) || len(upvote) == 0 {
+	if !primitive.IsValidObjectID(id) || err != nil {
 		t.Errorf("O id retornado pela insercao e invalido")
 	}
 
-	if upvote[0].Type != "upvote" || upvote[0].CommentId != newObjID {
+	if upvote.Type != "upvote" || upvote.CommentId != newObjID {
 		t.Errorf("Os dados retornados pela insercao sao invalidos")
 	}
 
 	upvoteService.DeleteById(id)
-	upvote, _ = upvoteService.FindById(id)
-	if len(upvote) != 0 {
+	upvote, err = upvoteService.FindById(id)
+	if err == nil {
 		t.Errorf("O documento nao foi deletado")
 	}
 }

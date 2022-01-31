@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type MockedUpvoteRepository struct {
@@ -17,14 +18,13 @@ func NewUpvoteRepository() *MockedUpvoteRepository {
 	}
 }
 
-func (repository *MockedUpvoteRepository) FindById(id string) ([]models.Upvote, error) {
-	result := []models.Upvote{}
+func (repository *MockedUpvoteRepository) FindById(id string) (models.Upvote, error) {
 	for _, upvote := range repository.collection {
 		if upvote.Id.Hex() == id {
-			result = append(result, upvote)
+			return upvote, nil
 		}
 	}
-	return result, nil
+	return models.Upvote{}, mongo.ErrNoDocuments
 }
 
 func (repository *MockedUpvoteRepository) FindByCommentId(commentId string) ([]models.Upvote, error) {

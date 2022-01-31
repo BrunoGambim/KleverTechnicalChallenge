@@ -19,12 +19,12 @@ type UpvoteController struct {
 func NewUpvoteController() *UpvoteController {
 	repository, err := upvote_repository.NewUpvoteRepository()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf(err.Error())
 	}
 
 	service, err := services.NewUpvoteService(repository)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf(err.Error())
 	}
 
 	return &UpvoteController{
@@ -35,27 +35,24 @@ func NewUpvoteController() *UpvoteController {
 func (controller *UpvoteController) GetUpvoteById(ctx context.Context, idDto *IdDTO) (*GetUpvoteDTO, error) {
 	id, err := idFromDto(idDto)
 	if err != nil {
-		return &GetUpvoteDTO{}, controllers_utils.HandleInvalidIdError(err)
+		return &GetUpvoteDTO{}, controllers_utils.Handle(err)
 	}
 	upvote, err := controller.upvoteService.FindById(id)
 	if err != nil {
-		return &GetUpvoteDTO{}, controllers_utils.HandleUnknownError(err)
+		return &GetUpvoteDTO{}, controllers_utils.Handle(err)
 	}
-	if len(upvote) == 0 {
-		return &GetUpvoteDTO{}, controllers_utils.HandleNotFoundError()
-	}
-	response := getAlbumDtoFromModel(upvote[0])
+	response := getAlbumDtoFromModel(upvote)
 	return response, nil
 }
 
 func (controller *UpvoteController) GetUpvotesByCommentId(idDto *IdDTO, stream UpvoteController_GetUpvotesByCommentIdServer) error {
 	id, err := idFromDto(idDto)
 	if err != nil {
-		return controllers_utils.HandleInvalidIdError(err)
+		return controllers_utils.Handle(err)
 	}
 	upvotes, err := controller.upvoteService.FindByCommentId(id)
 	if err != nil {
-		return controllers_utils.HandleUnknownError(err)
+		return controllers_utils.Handle(err)
 	}
 	for _, upvote := range upvotes {
 		stream.Send(getAlbumDtoFromModel(upvote))
@@ -66,12 +63,12 @@ func (controller *UpvoteController) GetUpvotesByCommentId(idDto *IdDTO, stream U
 func (controller *UpvoteController) CreateUpvote(ctx context.Context, upvoteDto *CreateUpvoteDTO) (*empty.Empty, error) {
 	upvote, err := upvoteFromCreateDto(upvoteDto)
 	if err != nil {
-		return &empty.Empty{}, controllers_utils.HandleInvalidIdError(err)
+		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
 
 	_, err = controller.upvoteService.Insert(upvote)
 	if err != nil {
-		return &empty.Empty{}, controllers_utils.HandleUnknownError(err)
+		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
 	return &empty.Empty{}, nil
 }
@@ -79,11 +76,11 @@ func (controller *UpvoteController) CreateUpvote(ctx context.Context, upvoteDto 
 func (controller *UpvoteController) DeleteUpvote(ctx context.Context, idDto *IdDTO) (*empty.Empty, error) {
 	id, err := idFromDto(idDto)
 	if err != nil {
-		return &empty.Empty{}, controllers_utils.HandleInvalidIdError(err)
+		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
 	err = controller.upvoteService.DeleteById(id)
 	if err != nil {
-		return &empty.Empty{}, controllers_utils.HandleUnknownError(err)
+		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
 	return &empty.Empty{}, nil
 }

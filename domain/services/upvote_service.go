@@ -16,7 +16,7 @@ func NewUpvoteService(repository upvote_repository.UpvoteRepository) (*UpvoteSer
 	}, nil
 }
 
-func (service *UpvoteService) FindById(id string) ([]models.Upvote, error) {
+func (service *UpvoteService) FindById(id string) (models.Upvote, error) {
 	upvote, err := service.upvoteRepository.FindById(id)
 	return upvote, err
 }

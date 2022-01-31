@@ -19,12 +19,12 @@ type CommentController struct {
 func NewCommentController() *CommentController {
 	repository, err := comment_repository.NewCommentRepository()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf(err.Error())
 	}
 
 	service, err := services.NewCommentService(repository)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf(err.Error())
 	}
 
 	return &CommentController{
@@ -35,7 +35,7 @@ func NewCommentController() *CommentController {
 func (controller *CommentController) GetAllComments(e *empty.Empty, stream CommentController_GetAllCommentsServer) error {
 	commentList, err := controller.commentService.FindAll()
 	if err != nil {
-		return controllers_utils.HandleUnknownError(err)
+		return controllers_utils.Handle(err)
 	}
 	for _, comment := range commentList {
 		stream.Send(getCommentDtoFromModel(comment))
@@ -47,7 +47,7 @@ func (controller *CommentController) CreateComment(ctx context.Context, commentD
 	comment := commentFromCreateDto(commentDto)
 	_, err := controller.commentService.Insert(comment)
 	if err != nil {
-		return &empty.Empty{}, controllers_utils.HandleUnknownError(err)
+		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
 	return &empty.Empty{}, nil
 }
