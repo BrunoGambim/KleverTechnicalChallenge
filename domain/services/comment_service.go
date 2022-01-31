@@ -16,15 +16,11 @@ func NewCommentService(repository comment_repository.CommentRepository) (*Commen
 }
 
 func (service *CommentService) FindAll() ([]models.Comment, error) {
-	service.commentRepository.Lock()
-	defer service.commentRepository.Unlock()
 	comments, err := service.commentRepository.FindAll()
 	return comments, err
 }
 
 func (service *CommentService) Insert(comment models.Comment) (string, error) {
-	service.commentRepository.Lock()
-	defer service.commentRepository.Unlock()
 	id, err := service.commentRepository.Insert(comment)
 	return id, err
 }

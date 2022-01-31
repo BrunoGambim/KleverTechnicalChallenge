@@ -23,7 +23,7 @@ type CommentRepositoryImpl struct {
 	ctx        context.Context
 }
 
-func NewCommentRepository() (*CommentRepositoryImpl, error) {
+func NewCommentRepository() (CommentRepository, error) {
 	commentRepositoryOnce.Do(func() {
 		ctx := context.Background()
 		client, err := connectionFactory.GetMongoClient(ctx)
@@ -45,6 +45,8 @@ func NewCommentRepository() (*CommentRepositoryImpl, error) {
 }
 
 func (repository *CommentRepositoryImpl) Insert(comment models.Comment) (string, error) {
+	repository.Lock()
+	defer repository.Unlock()
 	result, err := repository.collection.InsertOne(repository.ctx, comment)
 	if err != nil {
 		return "", err
@@ -54,6 +56,8 @@ func (repository *CommentRepositoryImpl) Insert(comment models.Comment) (string,
 }
 
 func (repository *CommentRepositoryImpl) FindAll() ([]models.Comment, error) {
+	repository.Lock()
+	defer repository.Unlock()
 	filter := bson.M{}
 
 	cur, err := repository.collection.Find(repository.ctx, filter)

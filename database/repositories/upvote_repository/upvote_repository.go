@@ -9,6 +9,4 @@ type UpvoteRepository interface {
 	FindByCommentId(commentId string) ([]models.Upvote, error)
 	Insert(upvote models.Upvote) (string, error)
 	DeleteById(id string) error
-	Lock()
-	Unlock()
 }

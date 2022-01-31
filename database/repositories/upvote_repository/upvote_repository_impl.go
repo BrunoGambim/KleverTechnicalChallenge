@@ -44,6 +44,9 @@ func NewUpvoteRepository() (*UpvoteRepositoryImpl, error) {
 }
 
 func (repository *UpvoteRepositoryImpl) FindById(id string) ([]models.Upvote, error) {
+	repository.Lock()
+	defer repository.Unlock()
+
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return []models.Upvote{}, err
@@ -61,6 +64,9 @@ func (repository *UpvoteRepositoryImpl) FindById(id string) ([]models.Upvote, er
 }
 
 func (repository *UpvoteRepositoryImpl) FindByCommentId(commentId string) ([]models.Upvote, error) {
+	repository.Lock()
+	defer repository.Unlock()
+
 	objectId, err := primitive.ObjectIDFromHex(commentId)
 	if err != nil {
 		return []models.Upvote{}, err
@@ -91,6 +97,9 @@ func (repository *UpvoteRepositoryImpl) upvoteListFromCur(cur *mongo.Cursor) ([]
 }
 
 func (repository *UpvoteRepositoryImpl) Insert(upvote models.Upvote) (string, error) {
+	repository.Lock()
+	defer repository.Unlock()
+
 	result, err := repository.collection.InsertOne(repository.ctx, upvote)
 	if err != nil {
 		return "", err
@@ -100,6 +109,9 @@ func (repository *UpvoteRepositoryImpl) Insert(upvote models.Upvote) (string, er
 }
 
 func (repository *UpvoteRepositoryImpl) DeleteById(id string) error {
+	repository.Lock()
+	defer repository.Unlock()
+
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err

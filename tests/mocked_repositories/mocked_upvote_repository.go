@@ -2,14 +2,12 @@ package mocked_repositories
 
 import (
 	"KleverTechnicalChallenge/domain/models"
-	"sync"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type MockedUpvoteRepository struct {
-	sync.Mutex
 	collection []models.Upvote
 }
 
