@@ -28,6 +28,7 @@ func TestUpvoteService(t *testing.T) {
 	})
 	upvotes, _ = upvoteService.FindByCommentId("61f46f117942c5844c8cb661")
 	numberOfDocumentsAfterInsertion := len(upvotes)
+
 	if numberOfDocumentsBeforeInsertion+1 != numberOfDocumentsAfterInsertion {
 		t.Errorf("Erro ao inserir ou ler dados na base de dados")
 	}

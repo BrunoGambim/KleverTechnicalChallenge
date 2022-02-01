@@ -20,6 +20,7 @@ func idFromDto(idDto *IdDTO) (string, error) {
 	if !primitive.IsValidObjectID(idDto.Id) {
 		return "", primitive.ErrInvalidHex
 	}
+
 	return idDto.Id, nil
 }
 

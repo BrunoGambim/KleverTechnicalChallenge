@@ -2,7 +2,6 @@ package connection
 
 import (
 	"context"
-	"log"
 	"os"
 	"sync"
 
@@ -29,8 +28,8 @@ func GetMongoClient(context context.Context) (*mongo.Client, error) {
 		if err != nil {
 			clientInstanceError = err
 		}
+
 		clientInstance = client
-		log.Print("Connection created")
 	})
 	return clientInstance, clientInstanceError
 }

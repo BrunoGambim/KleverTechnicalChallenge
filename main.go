@@ -26,7 +26,6 @@ func getNetListener() net.Listener {
 
 func loadEnvFiles() {
 	err := godotenv.Overload(".env")
-
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
@@ -43,6 +42,7 @@ func main() {
 	upvote_controller.RegisterUpvoteControllerServer(grpcServer, upvote_controller.NewUpvoteController())
 
 	reflection.Register(grpcServer)
+
 	err := grpcServer.Serve(list)
 	if err != nil {
 		log.Fatalf(err.Error())

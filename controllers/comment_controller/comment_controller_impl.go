@@ -37,6 +37,7 @@ func (controller *CommentController) GetAllComments(e *empty.Empty, stream Comme
 	if err != nil {
 		return controllers_utils.Handle(err)
 	}
+
 	for _, comment := range commentList {
 		stream.Send(getCommentDtoFromModel(comment))
 	}
@@ -49,5 +50,6 @@ func (controller *CommentController) CreateComment(ctx context.Context, commentD
 	if err != nil {
 		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
+
 	return &empty.Empty{}, nil
 }

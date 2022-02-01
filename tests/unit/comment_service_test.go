@@ -30,6 +30,7 @@ func TestCommentService(t *testing.T) {
 	if numberOfDocumentsBeforeInsertion+1 != numberOfDocumentsAfterInsertion {
 		t.Errorf("Erro ao inserir ou ler dados na base de dados")
 	}
+
 	if !primitive.IsValidObjectID(id) {
 		t.Errorf("O id retornado pela insercao é invalido")
 	}

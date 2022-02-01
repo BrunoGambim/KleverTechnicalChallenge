@@ -44,10 +44,10 @@ func NewUpvoteRepository() (UpvoteRepository, error) {
 }
 
 func (repository *UpvoteRepositoryImpl) FindById(id string) (models.Upvote, error) {
-	result := models.Upvote{}
-
 	repository.Lock()
 	defer repository.Unlock()
+
+	result := models.Upvote{}
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -56,7 +56,6 @@ func (repository *UpvoteRepositoryImpl) FindById(id string) (models.Upvote, erro
 
 	filter := bson.M{"_id": objectId}
 	err = repository.collection.FindOne(repository.ctx, filter).Decode(&result)
-
 	if err != nil {
 		return result, err
 	}
@@ -75,7 +74,6 @@ func (repository *UpvoteRepositoryImpl) FindByCommentId(commentId string) ([]mod
 
 	filter := bson.M{"comment_id": objectId}
 	cur, err := repository.collection.Find(repository.ctx, filter)
-
 	if err != nil {
 		return []models.Upvote{}, err
 	}
@@ -88,10 +86,12 @@ func (repository *UpvoteRepositoryImpl) upvoteListFromCur(cur *mongo.Cursor) ([]
 	result := []models.Upvote{}
 	for cur.Next(repository.ctx) {
 		upvote := models.Upvote{}
+
 		err := cur.Decode(&upvote)
 		if err != nil {
 			return result, err
 		}
+
 		result = append(result, upvote)
 	}
 	return result, nil
@@ -105,6 +105,7 @@ func (repository *UpvoteRepositoryImpl) Insert(upvote models.Upvote) (string, er
 	if err != nil {
 		return "", err
 	}
+
 	id := result.InsertedID.(primitive.ObjectID).Hex()
 	return id, err
 }

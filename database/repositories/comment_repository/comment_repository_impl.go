@@ -47,10 +47,12 @@ func NewCommentRepository() (CommentRepository, error) {
 func (repository *CommentRepositoryImpl) Insert(comment models.Comment) (string, error) {
 	repository.Lock()
 	defer repository.Unlock()
+
 	result, err := repository.collection.InsertOne(repository.ctx, comment)
 	if err != nil {
 		return "", err
 	}
+
 	id := result.InsertedID.(primitive.ObjectID).Hex()
 	return id, err
 }
@@ -58,15 +60,14 @@ func (repository *CommentRepositoryImpl) Insert(comment models.Comment) (string,
 func (repository *CommentRepositoryImpl) FindAll() ([]models.Comment, error) {
 	repository.Lock()
 	defer repository.Unlock()
-	filter := bson.M{}
 
+	filter := bson.M{}
 	cur, err := repository.collection.Find(repository.ctx, filter)
 	if err != nil {
 		return []models.Comment{}, err
 	}
 
 	result, err := repository.commentListFromCur(cur)
-
 	return result, err
 }
 
@@ -78,6 +79,7 @@ func (repository *CommentRepositoryImpl) commentListFromCur(cur *mongo.Cursor) (
 		if err != nil {
 			return result, err
 		}
+
 		result = append(result, comment)
 	}
 	return result, nil

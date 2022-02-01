@@ -37,10 +37,12 @@ func (controller *UpvoteController) GetUpvoteById(ctx context.Context, idDto *Id
 	if err != nil {
 		return &GetUpvoteDTO{}, controllers_utils.Handle(err)
 	}
+
 	upvote, err := controller.upvoteService.FindById(id)
 	if err != nil {
 		return &GetUpvoteDTO{}, controllers_utils.Handle(err)
 	}
+
 	response := getAlbumDtoFromModel(upvote)
 	return response, nil
 }
@@ -50,10 +52,12 @@ func (controller *UpvoteController) GetUpvotesByCommentId(idDto *IdDTO, stream U
 	if err != nil {
 		return controllers_utils.Handle(err)
 	}
+
 	upvotes, err := controller.upvoteService.FindByCommentId(id)
 	if err != nil {
 		return controllers_utils.Handle(err)
 	}
+
 	for _, upvote := range upvotes {
 		stream.Send(getAlbumDtoFromModel(upvote))
 	}
@@ -70,6 +74,7 @@ func (controller *UpvoteController) CreateUpvote(ctx context.Context, upvoteDto 
 	if err != nil {
 		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
+
 	return &empty.Empty{}, nil
 }
 
@@ -78,9 +83,11 @@ func (controller *UpvoteController) DeleteUpvote(ctx context.Context, idDto *IdD
 	if err != nil {
 		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
+
 	err = controller.upvoteService.DeleteById(id)
 	if err != nil {
 		return &empty.Empty{}, controllers_utils.Handle(err)
 	}
+
 	return &empty.Empty{}, nil
 }
