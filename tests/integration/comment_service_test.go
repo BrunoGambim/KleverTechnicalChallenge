@@ -13,7 +13,7 @@ import (
 var commentService *services.CommentService
 
 func init() {
-	godotenv.Overload(".env")
+	godotenv.Overload("../../.env")
 	repository, _ := comment_repository.NewCommentRepository()
 	commentService, _ = services.NewCommentService(repository)
 }

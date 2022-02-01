@@ -13,7 +13,7 @@ import (
 var upvoteService *services.UpvoteService
 
 func init() {
-	godotenv.Overload(".env")
+	godotenv.Overload("../../.env")
 	repository, _ := upvote_repository.NewUpvoteRepository()
 	upvoteService, _ = services.NewUpvoteService(repository)
 }
